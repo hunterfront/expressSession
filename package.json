@@ -1,0 +1,25 @@
+{
+  "name": "expresssession",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env DEBUG=express-session nodemon app"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "connect-redis": "^6.1.3",
+    "cors": "^2.8.5",
+    "escape-html": "^1.0.3",
+    "express": "^4.18.1",
+    "express-session": "^1.17.3",
+    "parseurl": "^1.3.3",
+    "redis": "^4.2.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.19"
+  }
+}
