@@ -1,24 +1,24 @@
-const express = require('express');
-const session = require('express-session');
-const escapeHtml = require('escape-html');
+const express = require("express");
+const session = require("express-session");
+const escapeHtml = require("escape-html");
 const app = express();
-let RedisStore = require('connect-redis')(session);
-const { createClient } = require('redis');
+let RedisStore = require("connect-redis")(session);
+const { createClient } = require("redis");
 let redisClient = createClient({ legacyMode: true });
 redisClient.connect().catch(console.error);
 
-const cors = require('cors');
-var corsOptions = {
-  origin: 'http://127.0.0.1:8001',
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  // credentials: true,
-};
-app.use(cors(corsOptions));
+const cors = require("cors");
+// var corsOptions = {
+//   origin: 'http://127.0.0.1:8001',
+//   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+//   // credentials: true,
+// };
+app.use(cors());
 
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
-    secret: 'keyboard cat',
+    secret: "keyboard cat",
     resave: false,
     rolling: false,
     saveUninitialized: false,
@@ -30,19 +30,19 @@ function isAuthenticated(req, res, next) {
   if (req.session.user) {
     next();
   } else {
-    next('route');
+    next("route");
   }
 }
 
-app.get('/', isAuthenticated, function (req, res) {
+app.get("/", isAuthenticated, function (req, res) {
   res.send(
-    'hello, ' +
+    "hello, " +
       escapeHtml(req.session.user) +
-      '!' +
+      "!" +
       ' <a href="/logout">Logout</a>'
   );
 });
-app.get('/', function (req, res) {
+app.get("/", function (req, res) {
   res.send(
     '<form action="/login" method="post">' +
       'Username: <input name="user"><br>' +
@@ -52,7 +52,7 @@ app.get('/', function (req, res) {
 });
 
 app.post(
-  '/login',
+  "/login",
   express.urlencoded({ extended: false }),
   function (req, res) {
     // login logic to validate req.body.user and req.body.pass
@@ -70,13 +70,13 @@ app.post(
       // load does not happen before session is saved
       req.session.save(function (err) {
         if (err) return next(err);
-        res.redirect('/');
+        res.redirect("/");
       });
     });
   }
 );
 
-app.get('/logout', function (req, res, next) {
+app.get("/logout", function (req, res, next) {
   // logout logic
 
   // clear the user from the session object and save.
@@ -90,17 +90,17 @@ app.get('/logout', function (req, res, next) {
     // guard against forms of session fixation
     req.session.regenerate(function (err) {
       if (err) next(err);
-      res.redirect('/');
+      res.redirect("/");
     });
   });
 });
 
-app.get('/csrf', function (req, res) {
-  console.log('csrf attack!!');
+app.get("/csrf", function (req, res) {
+  console.log("csrf attack!!");
   console.log(req.session);
-  res.send('hello csrf');
+  res.send("hello csrf");
 });
 
-app.listen(8000, function () {
-  console.log('listen on 8000');
+app.listen(80, function () {
+  console.log("listen on 80");
 });
